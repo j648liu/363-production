@@ -71,7 +71,7 @@ show = visual.TextStim(win, text = "What is your gender? Please press \n \n-M fo
 show.draw()
 win.flip()
 Gender = event.waitKeys(keyList=['m','f','o','r'])
-f.write("Participant gender:" + str(Gender))
+f.write("Participant gender:" + str(Gender) + ',,,,')
 f.close()
 
 show = visual.TextStim(win, text = 'Thank you for participating.', color = 'white', height = 0.05, pos = (0.5,0.0))
