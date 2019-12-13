@@ -25,6 +25,10 @@ t.test(x, mu=0)
 #mean=3.167
 #Words read aloud significantly remembered better than words read silently
 
+corrects<- c(sum(a$assessment[a$list == "read"] == "correct")/12,sum(a$assessment[a$list == "silent"] == "correct")/12)
+barplot(corrects,main="Average correct answers",
+   names.arg=c("Read condition","Silent condition") 
+
 ##false alarm and missed detection
 y<- numeric()
 for (i in 1:12) {
@@ -70,5 +74,9 @@ i=i+1
 }
 
 plot(z, type="o")
-#recency effect stronger than primacy effect?
+#recency effect stronger than primacy effect
 #effect attenuated by ceiling effect (mostly high)
+
+mean(z)
+sd(z)
+#mean=0.742, sd=0.25
