@@ -4,7 +4,7 @@
 #+latex_header: \bibliographystyle{plain}
 
 * Abstract
-Memory and recollection is something that psychologists have been studying for over many years. Researchers have identified strategies that can best improve memory and the enhancement of retention. One strategy called the production effect looks at ways in which words are better recalled. Previous studies have looked at the advantages of reading words aloud compared to silently and have showed that information is better remembered when said out loud \cite{ozubko2017, castel2012}. 
+Memory and recollection is something that psychologists have been studying for over many years. Researchers have identified strategies that can best improve memory and the enhancement of retention. One strategy called the production effect looks at ways in which words are better recalled. Previous studies have looked at the advantages of reading words aloud compared to silently and have showed that information is better remembered when said out loud \cite{ozubko2012, castel2013}. 
 
 
 * Introduction
@@ -18,7 +18,7 @@ Memory and recollection is something that psychologists have been studying for o
 #sample descriptives
 
 ** Materials
-Three lists of words were created by using words used by MacLeod and Bodner in 2017\cite{macleod2017}, including a 20-word list for the read aloud condition, a 20-word list for the silent condition, and another 20-word list for distraction (random words) in the memory test.
+Three lists of words were created by using words used by MacLeod and Bodner in 2017 \cite{macleod2017}, including a 20-word list for the read aloud condition, a 20-word list for the silent condition, and another 20-word list for distraction (random words) in the memory test.
 
 ** Procedure
 Each participant was given a total of 40 words to memorize. 20 words were to be said aloud and another 20 were to be read silently. The words showed up on a black screen one at a time for 2.25 seconds each. All the words alternated in terms of whether the participant had to say it aloud or silently, which was indicated by their colors (blue for read aloud condition and white for silent condition). During the recollection assessment, a total of 40 words were presented to the participant, where 10 words were randomly selected from the read condition, 10 words were randomly selected from the silent condition, and 20 were distraction words never shown to the participants (used from the random word list). The participant was instructed to press the ‘Y’ key if they recalled seeing the word or ‘N’ key if not. 
@@ -26,52 +26,103 @@ Each participant was given a total of 40 words to memorize. 20 words were to be 
 
 * Results
 Data analysis of the production effect produced a significant result. A one-sample t-test (t(11) = 4.4228, p<0.05) revealed that on average, participants remembered more words correctly from the read aloud condition than from the silent condition.
-#+Begin_src R :results output graphics :file graph1.png
+#+Begin_src R :exports both :results output
 a <- read.csv("all_data.csv")
-
 summary(a)
 x<- numeric()
 num_par = nrow(a)/40
 for (i in 1:num_par) {
-	first_row = 40*(i-1)+1
-	last_row = 40*(i-1)+40
-	sub <- a[first_row:last_row,] 
-	p=sum(sub$assessment[sub$list == "read"] == "correct")-
-	sum(sub$assessment[sub$list == "silent"] == "correct")
-	x<- append(x, p)
+    first_row = 40*(i-1)+1
+    last_row = 40*(i-1)+40
+    sub <- a[first_row:last_row,] 
+    p=sum(sub$assessment[sub$list == "read"] == "correct")-
+    sum(sub$assessment[sub$list == "silent"] == "correct")
+    x<- append(x, p)
 }
 t.test(x, mu=0)
-corrects<- c(sum(a$assessment[a$list == "read"] == "correct")/12,sum(a$assessment[a$list == "silent"] == "correct")/12)
-barplot(corrects,main="Average correct answers",
-   names.arg=c("Read condition","Silent condition"))
+
 #+End_src
 
 #+RESULTS:
-[[file:graph1.png]]
+#+begin_example
+       X             trial               word           list       assessment 
+ Min.   :  1.0   Min.   : 1.00   beauty    : 12   distract:240   correct:386  
+ 1st Qu.:120.8   1st Qu.:10.75   capital   : 12   read    :120   false  : 94  
+ Median :240.5   Median :20.50   clothes   : 12   silent  :120                
+ Mean   :240.5   Mean   :20.50   dinner    : 12                               
+ 3rd Qu.:360.2   3rd Qu.:30.25   entrance  : 12                               
+ Max.   :480.0   Max.   :40.00   foundation: 12                               
+                                 (Other)   :408                               
+        identification          id      gender 
+ identification:214    buri      : 40   f:280  
+ rejection     :266    eamonn    : 40   m:200  
+                       kath      : 40          
+                       ktk       : 40          
+                       LL        : 40          
+                       LordJujube: 40          
+                       (Other)   :240          
+
+	One Sample t-test
+
+data:  x
+t = 4.4228, df = 11, p-value = 0.001024
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 1.590807 4.742526
+sample estimates:
+mean of x 
+ 3.166667 
+
+#+end_example
+#+Begin_src R :exports both :results output graphics :file comparison1.png
+a <- read.csv("all_data.csv")
+corrects <- c(sum(a$assessment[a$list == "read"] == "correct")/12,
+sum(a$assessment[a$list == "silent"] == "correct")/12)
+barplot(corrects,
+main="Average correct answers",
+ylab = "Correct Answers", 
+names.arg=c("Read condition","Silent condition")) 
+#+End_src
+
+#+RESULTS:
+[[file:comparison1.png]]
 
 Aside from the core analysis, exploratory analyses were also performed. One interesting finding was that missed detection was more common than false alarm. Another one-sample t-test revealed (t(11) = -4.5288, p<0.001) that among the cases when they were wrong, participants pressed ‘Y’ when the words did not show up less frequently than when they pressed ‘N’ when the words did show up.
-#+Begin_src R :exports both
+#+Begin_src R :exports both :results output 
 a <- read.csv("all_data.csv")
 
 num_par = nrow(a)/40
 y<- numeric()
 for (i in 1:num_par) {
-	first_row = 40*(i-1)+1
-	last_row = 40*(i-1)+40
-	sub <- a[first_row:last_row,] 
-	q=sum(sub$assessment[sub$identification == "reject"] == "false")-
-	sum(sub$assessment[sub$identification == "identification"] == "false")
-	y<- append(y, q)
+    first_row = 40*(i-1)+1
+    last_row = 40*(i-1)+40
+    sub <- a[first_row:last_row,] 
+    q=sum(sub$assessment[sub$identification == "reject"] == "false")-
+    sum(sub$assessment[sub$identification == "identification"] == "false")
+    y<- append(y, q)
 }
-
 t.test(y, mu=0)
 #+End_src
 
 #+RESULTS:
+#+begin_example
+
+	One Sample t-test
+
+data:  y
+t = -4.5288, df = 11, p-value = 0.0008596
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ -4.210338 -1.456329
+sample estimates:
+mean of x 
+-2.833333 
+
+#+end_example
 
 Finally, item difficulty (p) for each word were plotted, in other words, the proportions of the times of answering correctly among the times the words were tested. From an eyeball examination, the recency effect was stronger than the primacy effect. The words shown to the participants later generally had a higher proportion of being correctly remembered, while there was little difference between the words shown at the beginning and in the middle. However, a ceiling effect may have attenuated the variability of the results, since the majority of the memory tests were answered correctly (mean=0.742, sd=0.250).
 
-#+Begin_src R :results output graphics :file graph2.png
+#+Begin_src R :exports both :results output graphics :file comparison2.png
 a <- read.csv("all_data.csv")
 word<- unique(a$word)
 
@@ -96,14 +147,16 @@ for (i in 1:40) {
 	z<-append(z, w)
 }
 
-plot(z, type="o")
+plot(z, type="o",
+ylab = "accuracy",
+xlab = "word")
 
 mean(z)
 sd(z)
 #+End_src
 
 #+RESULTS:
-[[file:graph.png]]
+[[file:comparison2.png]]
 
 * Discussion
 The production effect was successfully replicated, as the difference between the read aloud and silent condition was significant. Future studies can further explore the two types of mistakes people made in the follow-up memory test to see how they are related: claiming they have seen the words when they haven’t, and claiming they haven’t seen the words when they have.
